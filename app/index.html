@@ -1,0 +1,73 @@
+<!doctype html>
+<!-- Página de ClasificaIA: formulario que llama a POST /predict con fetch.
+En su proyecto cambian los campos del formulario por las variables de su modelo. -->
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Estimador de Precio de Vivienda</title>
+<style>
+body { font-family: system-ui, sans-serif; max-width: 420px; margin: 2rem auto; }
+label { display: block; margin-bottom: 0.6rem; }
+input { width: 100%; padding: 4px; }
+button { padding: 6px 14px; }
+#resultado { font-weight: bold; }
+</style>
+</head>
+<body>
+<h1>Estimador de Precio de Vivienda</h1>
+<p>Ingresa los datos de la vivienda para estimar su valor.</p>
+<form id="formulario">
+<!-- name debe coincidir con los campos de la clase Flor en app/main.py -->
+<label>Ingreso mediano (MedInc)
+<input name="MedInc" type="number" step="0.01" value="8.3252" required></label>
+
+<label>Antigüedad de la vivienda (HouseAge)
+<input name="HouseAge" type="number" step="1" value="41" required></label>
+
+<label>Promedio de habitaciones (AveRooms)
+<input name="AveRooms" type="number" step="0.01" value="6.98" required></label>
+
+<label>Promedio de dormitorios (AveBedrms)
+<input name="AveBedrms" type="number" step="0.01" value="1.02" required></label>
+
+<label>Población (Population)
+<input name="Population" type="number" step="1" value="322" required></label>
+
+<label>Ocupación promedio (AveOccup)
+<input name="AveOccup" type="number" step="0.01" value="2.55" required></label>
+
+<label>Latitud (Latitude)
+<input name="Latitude" type="number" step="0.01" value="37.88" required></label>
+
+<label>Longitud (Longitude)
+<input name="Longitude" type="number" step="0.01" value="-122.23" required></label>
+<!-- Hito 4: si la API exige llave, se escribe aquí (no se guarda en el código) -->
+<label>Llave de acceso (opcional)
+<input id="llave" type="password" autocomplete="off"></label>
+<button>Estimar precio</button>
+</form>
+<p id="resultado"></p>
+<script>
+// Al enviar el formulario: arma un objeto JSON con los campos y llama a la API
+document.getElementById("formulario").addEventListener("submit", async (evento) => {
+evento.preventDefault(); // no recargar la página
+const campos = new FormData(evento.target);
+const datos = {};
+for (const [nombre, valor] of campos) datos[nombre] = parseFloat(valor);
+const cabeceras = { "Content-Type": "application/json" };
+const llave = document.getElementById("llave").value;
+if (llave) cabeceras["x-api-key"] = llave; // solo si el usuario la escribió
+const resp = await fetch("/predict", {
+method: "POST",
+headers: cabeceras,
+body: JSON.stringify(datos),
+});
+const json = await resp.json();
+document.getElementById("resultado").textContent = resp.ok
+? `Precio estimado: ${json.precio_estimado} (${json.unidad})`
+: "Datos inválidos: revisa los valores";
+});
+</script>
+</body>
+</html>
