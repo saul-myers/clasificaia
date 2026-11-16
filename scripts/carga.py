@@ -13,7 +13,16 @@ URL = sys.argv[1].rstrip("/") if len(sys.argv) > 1 else "http://localhost:8000"
 N = int(sys.argv[2]) if len(sys.argv) > 2 else 200 # peticiones en total
 SIMULTANEAS = int(sys.argv[3]) if len(sys.argv) > 3 else 20 # hilos a la vez
 # >>> En su proyecto: cambien este ejemplo por una entrada válida de SU modelo.
-DATO = {"largo_sepalo": 5.1, "ancho_sepalo": 3.5, "largo_petalo": 1.4, "ancho_petalo": 0.2}
+DATO = {
+    "MedInc": 8.3252,
+    "HouseAge": 41,
+    "AveRooms": 6.984,
+    "AveBedrms": 1.023,
+    "Population": 322,
+    "AveOccup": 2.556,
+    "Latitude": 37.88,
+    "Longitude": -122.23
+}
 CABECERAS = {"x-api-key": os.getenv("API_KEY", "")} # Hito 4: llave opcional
 
 def una_peticion(_):
